@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { BookOpen, Plus, X, BookOpenCheck, GraduationCap, User, Layout, Search, LogOut } from "lucide-react";
+import { BookOpen, Plus, X, BookOpenCheck, GraduationCap, User, Layout, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
@@ -13,7 +13,6 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuContent } from "@/components/ui/dropdown";
 
 const Dashboard = () => {
   const [isJoinDialogOpen, setIsJoinDialogOpen] = useState(false);
@@ -31,7 +30,6 @@ const Dashboard = () => {
       const email = Cookies.get("studentEmail");
       if (!email) {
         setLoading(false);
-        navigate("/login"); // Redirect to login if no studentEmail cookie
         return;
       }
 
@@ -66,21 +64,7 @@ const Dashboard = () => {
     };
 
     fetchStudentData();
-  }, [toast, navigate]);
-
-  // Handle back navigation to login or signup page
-  useEffect(() => {
-    const handlePopState = () => {
-      if (window.location.pathname === "/login" || window.location.pathname === "/signup") {
-        Cookies.remove("studentEmail");
-      }
-    };
-
-    window.addEventListener("popstate", handlePopState);
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, []);
+  }, [toast]);
 
   const handleJoinClass = async () => {
     if (!classId.trim()) {
@@ -158,12 +142,6 @@ const Dashboard = () => {
     return colors[sum % colors.length];
   };
 
-  // Logout function
-  const handleLogout = () => {
-    Cookies.remove("studentEmail");
-    navigate("/"); // Redirect to home
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navbar */}
@@ -182,18 +160,9 @@ const Dashboard = () => {
                 <span className="font-medium">{student.name || student.email.split('@')[0]}</span>
               </div>
             )}
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Avatar className="h-8 w-8 bg-primary text-white">
-                  <AvatarFallback>{getInitials(student)}</AvatarFallback>
-                </Avatar>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={handleLogout}>
-                  <LogOut className="h-5 w-5 mr-2" /> Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Avatar className="h-8 w-8 bg-primary text-white">
+              <AvatarFallback>{getInitials(student)}</AvatarFallback>
+            </Avatar>
           </div>
         </div>
       </header>
@@ -217,6 +186,7 @@ const Dashboard = () => {
                 <Plus className="h-4 w-4" /> Join New Class
               </Button>
             </div>
+
             <Separator />
 
             {/* Stats Overview */}
