@@ -179,9 +179,9 @@ const ClassPage = () => {
                   Dashboard
                 </Link>
                 <span className="text-gray-500 mx-1">/</span>
-                <Link to="/classrooms" className="text-gray-500 hover:text-gray-900 text-sm font-medium mr-1">
+{/*                 <Link to="/classrooms" className="text-gray-500 hover:text-gray-900 text-sm font-medium mr-1">
                   Classrooms
-                </Link>
+                </Link> */}
                 <span className="text-gray-500 mx-1">/</span>
                 <span className="text-gray-900 text-sm font-medium truncate max-w-sm">
                   {classDetails?.title || classDetails?.name || "Class"}
