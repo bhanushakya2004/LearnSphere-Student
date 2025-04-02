@@ -196,199 +196,11 @@
 //     </div>
 //   );
 
-// import React, { useEffect, useState } from "react";
-// import Cookies from "js-cookie";
-// import { BookOpen, Plus, X, BookOpenCheck, GraduationCap, User, Layout, Search } from "lucide-react";
-// import { Button } from "@/components/ui/button";
-// import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
-// import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
-// import { Input } from "@/components/ui/input";
-// import { useToast } from "@/components/ui/use-toast";
-// import { db } from "@/firebase";
-// import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
-// import { useNavigate } from "react-router-dom";
-// import { Separator } from "@/components/ui/separator";
-// import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-// import { Badge } from "@/components/ui/badge";
-// import { Skeleton } from "@/components/ui/skeleton";
-
-// const Dashboard = () => {
-//   const [isJoinDialogOpen, setIsJoinDialogOpen] = useState(false);
-//   const [classId, setClassId] = useState("");
-//   const [joinedClasses, setJoinedClasses] = useState([]);
-//   const [student, setStudent] = useState(null);
-//   const [loading, setLoading] = useState(true);
-//   const { toast } = useToast();
-//   const navigate = useNavigate();
-
-//   // Fetch Student Data from Firestore
-//   useEffect(() => {
-//     const fetchStudentData = async () => {
-//       setLoading(true);
-//       const email = Cookies.get("studentEmail");
-//       if (!email) {
-//         setLoading(false);
-//         return;
-//       }
-
-//       try {
-//         const studentRef = doc(db, "students", email);
-//         const studentSnap = await getDoc(studentRef);
-
-//         if (studentSnap.exists()) {
-//           const studentData = studentSnap.data();
-//           setStudent(studentData);
-
-//           // Fetch joined class details
-//           const classDetails = [];
-//           for (const id of studentData.classIds || []) {
-//             const classDoc = await getDoc(doc(db, "classrooms", id));
-//             if (classDoc.exists()) {
-//               classDetails.push({ id, ...classDoc.data() });
-//             }
-//           }
-//           setJoinedClasses(classDetails);
-//         }
-//       } catch (error) {
-//         console.error("Error fetching student data:", error);
-//         toast({ 
-//           title: "Error", 
-//           description: "Failed to load your profile data.", 
-//           variant: "destructive" 
-//         });
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchStudentData();
-//   }, [toast]);
-
-//   const handleJoinClass = async () => {
-//     if (!classId.trim()) {
-//       toast({ title: "Error", description: "Class ID cannot be empty.", variant: "destructive" });
-//       return;
-//     }
-  
-//     try {
-//       const studentRef = doc(db, "students", student.email);
-//       const classRef = doc(db, "classrooms", classId);
-  
-//       // Update student's classIds array
-//       await updateDoc(studentRef, { classIds: arrayUnion(classId) });
-  
-//       // Fetch class details
-//       const classSnap = await getDoc(classRef);
-  
-//       if (classSnap.exists()) {
-//         // Add student email to class's students array
-//         await updateDoc(classRef, { students: arrayUnion(student.email) });
-  
-//         // Update UI with the new class
-//         setJoinedClasses([...joinedClasses, { id: classId, ...classSnap.data() }]);
-  
-//         toast({ 
-//           title: "Success", 
-//           description: "Joined class successfully!",
-//           variant: "default"
-//         });
-//       } else {
-//         toast({ title: "Error", description: "Class ID not found.", variant: "destructive" });
-//       }
-  
-//       setClassId(""); // Clear input
-//       setIsJoinDialogOpen(false); // Close dialog
-//     } catch (error) {
-//       console.error("Join error:", error);
-//       toast({ title: "Join Failed", description: "Could not join class.", variant: "destructive" });
-//     }
-//   };
-
-//   const handleClassClick = (classId) => {
-//     Cookies.set("selectedClassId", classId, { expires: 7 }); // Store in cookies for 7 days
-//     navigate(`/class/${classId}`); // Navigate to the class page
-//   };
-
-//   // Helper to get initials from student name or email
-//   const getInitials = (person) => {
-//     if (!person) return "S";
-    
-//     if (person.name) {
-//       return person.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
-//     }
-    
-//     if (person.email) {
-//       return person.email.split('@')[0].substring(0, 2).toUpperCase();
-//     }
-    
-//     return "S";
-//   };
-
-//   // Get random pastel color for class cards
-//   const getClassColor = (id) => {
-//     const colors = [
-//       "from-blue-100 to-blue-50 border-blue-200",
-//       "from-purple-100 to-purple-50 border-purple-200",
-//       "from-green-100 to-green-50 border-green-200",
-//       "from-amber-100 to-amber-50 border-amber-200",
-//       "from-rose-100 to-rose-50 border-rose-200",
-//       "from-indigo-100 to-indigo-50 border-indigo-200",
-//     ];
-    
-//     // Use the sum of char codes in the id to pick a color
-//     const sum = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-//     return colors[sum % colors.length];
-//   };
-
-//   return (
-//     <div className="min-h-screen bg-gray-50">
-//       {/* Navbar */}
-//       <header className="bg-white shadow-sm sticky top-0 z-10 border-b">
-//         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-//           <div className="flex items-center gap-2">
-//             <GraduationCap className="h-6 w-6 text-primary" />
-//             <span className="font-bold text-xl bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">LearnSphere</span>
-//           </div>
-          
-//           {/* Welcome Message & User */}
-//           <div className="flex items-center gap-4">
-//             {student && (
-//               <div className="hidden md:flex items-center gap-1 text-gray-700">
-//                 <span>Welcome back,</span>
-//                 <span className="font-medium">{student.name || student.email.split('@')[0]}</span>
-//               </div>
-//             )}
-//             <Avatar className="h-8 w-8 bg-primary text-white">
-//               <AvatarFallback>{getInitials(student)}</AvatarFallback>
-//             </Avatar>
-//           </div>
-//         </div>
-//       </header>
-
-//       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-//         {loading ? (
-//           <LoadingState />
-//         ) : (
-//           <div className="space-y-8">
-//             {/* Dashboard Header */}
-//             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-//               <div>
-//                 <h1 className="text-2xl font-bold text-gray-900">Student Dashboard</h1>
-//                 <p className="text-gray-500 mt-1">Manage your classes and assignments</p>
-//               </div>
-              
-//               <Button 
-//                 onClick={() => setIsJoinDialogOpen(true)}
-//                 className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-sm transition-all"
-//               >
-//                 <Plus className="h-4 w-4" /> Join New Class
-//               </Button>
-//             </div>
 import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { BookOpen, Plus, X, BookOpenCheck, GraduationCap, User, Layout, Search, LogOut } from "lucide-react";
+import { BookOpen, Plus, X, BookOpenCheck, GraduationCap, User, Layout, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardFooter, CardDescription } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/components/ui/use-toast";
@@ -399,7 +211,6 @@ import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuContent } from "@/components/ui/dropdown";
 
 const Dashboard = () => {
   const [isJoinDialogOpen, setIsJoinDialogOpen] = useState(false);
@@ -417,7 +228,6 @@ const Dashboard = () => {
       const email = Cookies.get("studentEmail");
       if (!email) {
         setLoading(false);
-        navigate("/login"); // Redirect to login if no studentEmail cookie
         return;
       }
 
@@ -452,7 +262,7 @@ const Dashboard = () => {
     };
 
     fetchStudentData();
-  }, [toast, navigate]);
+  }, [toast]);
 
   const handleJoinClass = async () => {
     if (!classId.trim()) {
@@ -530,12 +340,6 @@ const Dashboard = () => {
     return colors[sum % colors.length];
   };
 
-  // Logout function
-  const handleLogout = () => {
-    Cookies.remove("studentEmail");
-    navigate("/"); // Redirect to home
-  };
-
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Navbar */}
@@ -554,18 +358,9 @@ const Dashboard = () => {
                 <span className="font-medium">{student.name || student.email.split('@')[0]}</span>
               </div>
             )}
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <Avatar className="h-8 w-8 bg-primary text-white">
-                  <AvatarFallback>{getInitials(student)}</AvatarFallback>
-                </Avatar>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={handleLogout}>
-                  <LogOut className="h-5 w-5 mr-2" /> Logout
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <Avatar className="h-8 w-8 bg-primary text-white">
+              <AvatarFallback>{getInitials(student)}</AvatarFallback>
+            </Avatar>
           </div>
         </div>
       </header>
@@ -589,7 +384,214 @@ const Dashboard = () => {
                 <Plus className="h-4 w-4" /> Join New Class
               </Button>
             </div>
-            <Separator />
+
+
+// import React, { useEffect, useState } from "react";
+// import Cookies from "js-cookie";
+// import { BookOpen, Plus, X, BookOpenCheck, GraduationCap, User, Layout, Search, LogOut } from "lucide-react";
+// import { Button } from "@/components/ui/button";
+// import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
+// import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+// import { Input } from "@/components/ui/input";
+// import { useToast } from "@/components/ui/use-toast";
+// import { db } from "@/firebase";
+// import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
+// import { useNavigate } from "react-router-dom";
+// import { Separator } from "@/components/ui/separator";
+// import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+// import { Badge } from "@/components/ui/badge";
+// import { Skeleton } from "@/components/ui/skeleton";
+// import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuContent } from "@/components/ui/dropdown";
+
+// const Dashboard = () => {
+//   const [isJoinDialogOpen, setIsJoinDialogOpen] = useState(false);
+//   const [classId, setClassId] = useState("");
+//   const [joinedClasses, setJoinedClasses] = useState([]);
+//   const [student, setStudent] = useState(null);
+//   const [loading, setLoading] = useState(true);
+//   const { toast } = useToast();
+//   const navigate = useNavigate();
+
+//   // Fetch Student Data from Firestore
+//   useEffect(() => {
+//     const fetchStudentData = async () => {
+//       setLoading(true);
+//       const email = Cookies.get("studentEmail");
+//       if (!email) {
+//         setLoading(false);
+//         navigate("/login"); // Redirect to login if no studentEmail cookie
+//         return;
+//       }
+
+//       try {
+//         const studentRef = doc(db, "students", email);
+//         const studentSnap = await getDoc(studentRef);
+
+//         if (studentSnap.exists()) {
+//           const studentData = studentSnap.data();
+//           setStudent(studentData);
+
+//           // Fetch joined class details
+//           const classDetails = [];
+//           for (const id of studentData.classIds || []) {
+//             const classDoc = await getDoc(doc(db, "classrooms", id));
+//             if (classDoc.exists()) {
+//               classDetails.push({ id, ...classDoc.data() });
+//             }
+//           }
+//           setJoinedClasses(classDetails);
+//         }
+//       } catch (error) {
+//         console.error("Error fetching student data:", error);
+//         toast({ 
+//           title: "Error", 
+//           description: "Failed to load your profile data.", 
+//           variant: "destructive" 
+//         });
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     fetchStudentData();
+//   }, [toast, navigate]);
+
+//   const handleJoinClass = async () => {
+//     if (!classId.trim()) {
+//       toast({ title: "Error", description: "Class ID cannot be empty.", variant: "destructive" });
+//       return;
+//     }
+  
+//     try {
+//       const studentRef = doc(db, "students", student.email);
+//       const classRef = doc(db, "classrooms", classId);
+  
+//       // Update student's classIds array
+//       await updateDoc(studentRef, { classIds: arrayUnion(classId) });
+  
+//       // Fetch class details
+//       const classSnap = await getDoc(classRef);
+  
+//       if (classSnap.exists()) {
+//         // Add student email to class's students array
+//         await updateDoc(classRef, { students: arrayUnion(student.email) });
+  
+//         // Update UI with the new class
+//         setJoinedClasses([...joinedClasses, { id: classId, ...classSnap.data() }]);
+  
+//         toast({ 
+//           title: "Success", 
+//           description: "Joined class successfully!",
+//           variant: "default"
+//         });
+//       } else {
+//         toast({ title: "Error", description: "Class ID not found.", variant: "destructive" });
+//       }
+  
+//       setClassId(""); // Clear input
+//       setIsJoinDialogOpen(false); // Close dialog
+//     } catch (error) {
+//       console.error("Join error:", error);
+//       toast({ title: "Join Failed", description: "Could not join class.", variant: "destructive" });
+//     }
+//   };
+
+//   const handleClassClick = (classId) => {
+//     Cookies.set("selectedClassId", classId, { expires: 7 }); // Store in cookies for 7 days
+//     navigate(`/class/${classId}`); // Navigate to the class page
+//   };
+
+//   // Helper to get initials from student name or email
+//   const getInitials = (person) => {
+//     if (!person) return "S";
+    
+//     if (person.name) {
+//       return person.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+//     }
+    
+//     if (person.email) {
+//       return person.email.split('@')[0].substring(0, 2).toUpperCase();
+//     }
+    
+//     return "S";
+//   };
+
+//   // Get random pastel color for class cards
+//   const getClassColor = (id) => {
+//     const colors = [
+//       "from-blue-100 to-blue-50 border-blue-200",
+//       "from-purple-100 to-purple-50 border-purple-200",
+//       "from-green-100 to-green-50 border-green-200",
+//       "from-amber-100 to-amber-50 border-amber-200",
+//       "from-rose-100 to-rose-50 border-rose-200",
+//       "from-indigo-100 to-indigo-50 border-indigo-200",
+//     ];
+    
+//     // Use the sum of char codes in the id to pick a color
+//     const sum = id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
+//     return colors[sum % colors.length];
+//   };
+
+//   // Logout function
+//   const handleLogout = () => {
+//     Cookies.remove("studentEmail");
+//     navigate("/"); // Redirect to home
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-gray-50">
+//       {/* Navbar */}
+//       <header className="bg-white shadow-sm sticky top-0 z-10 border-b">
+//         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+//           <div className="flex items-center gap-2">
+//             <GraduationCap className="h-6 w-6 text-primary" />
+//             <span className="font-bold text-xl bg-gradient-to-r from-primary to-blue-600 bg-clip-text text-transparent">LearnSphere</span>
+//           </div>
+          
+//           {/* Welcome Message & User */}
+//           <div className="flex items-center gap-4">
+//             {student && (
+//               <div className="hidden md:flex items-center gap-1 text-gray-700">
+//                 <span>Welcome back,</span>
+//                 <span className="font-medium">{student.name || student.email.split('@')[0]}</span>
+//               </div>
+//             )}
+//             <DropdownMenu>
+//               <DropdownMenuTrigger>
+//                 <Avatar className="h-8 w-8 bg-primary text-white">
+//                   <AvatarFallback>{getInitials(student)}</AvatarFallback>
+//                 </Avatar>
+//               </DropdownMenuTrigger>
+//               <DropdownMenuContent align="end">
+//                 <DropdownMenuItem onClick={handleLogout}>
+//                   <LogOut className="h-5 w-5 mr-2" /> Logout
+//                 </DropdownMenuItem>
+//               </DropdownMenuContent>
+//             </DropdownMenu>
+//           </div>
+//         </div>
+//       </header>
+
+//       <main className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+//         {loading ? (
+//           <LoadingState />
+//         ) : (
+//           <div className="space-y-8">
+//             {/* Dashboard Header */}
+//             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+//               <div>
+//                 <h1 className="text-2xl font-bold text-gray-900">Student Dashboard</h1>
+//                 <p className="text-gray-500 mt-1">Manage your classes and assignments</p>
+//               </div>
+              
+//               <Button 
+//                 onClick={() => setIsJoinDialogOpen(true)}
+//                 className="bg-primary hover:bg-primary/90 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow-sm transition-all"
+//               >
+//                 <Plus className="h-4 w-4" /> Join New Class
+//               </Button>
+//             </div>
+//             <Separator />
 
             {/* Stats Overview */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
