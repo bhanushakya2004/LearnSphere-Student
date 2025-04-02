@@ -136,7 +136,7 @@ const ClassPage = () => {
         classroomId: classId,
         studentId: userEmail,
         studentName: studentName || userEmail.split('@')[0], // Use email username if name not available
-        submissionDate: serverTimestamp(),
+        submissionDate: new Date().toISOString(),
         status: "Submitted",
         content: plainText
       });
