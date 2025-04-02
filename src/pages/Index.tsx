@@ -226,11 +226,18 @@ const Index = () => {
             <div className="mt-16 flex justify-center">
               <div className="relative w-full max-w-4xl h-64 md:h-80 rounded-2xl overflow-hidden shadow-2xl">
                 <div className="absolute inset-0 bg-gradient-to-tr from-slate-800 to-slate-700 flex items-center justify-center">
-                  <img 
+{/*                   <img 
                     src="/api/placeholder/800/600" 
                     alt="LearnSphere Dashboard Preview" 
                     className="object-cover opacity-70 mix-blend-overlay" 
-                  />
+                  /> */}
+
+                      <img 
+  src="https://c4.wallpaperflare.com/wallpaper/746/107/625/classroom-building-realistic-arsenixc-wallpaper-preview.jpg" 
+  alt="LearnSphere Dashboard Preview" 
+  className="object-cover opacity-70 mix-blend-overlay" 
+/>
+
                   <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
                     <BookOpen className="h-16 w-16 text-white opacity-90 mb-4" />
                     <p className="text-white text-xl font-medium">Powerful Learning Dashboard</p>
@@ -330,14 +337,7 @@ const Index = () => {
                 bgColor: "bg-purple-500/10",
                 hoverBgColor: "group-hover:bg-purple-500/20"
               },
-              { 
-                icon: Award, 
-                title: "Achievement System", 
-                description: "Earn badges and rewards that showcase your academic accomplishments",
-                color: "text-blue-500",
-                bgColor: "bg-blue-500/10",
-                hoverBgColor: "group-hover:bg-blue-500/20"
-              },
+              
             ].map((feature, index) => (
               <AnimatedTransition key={index} delay={index * 100}>
                 <div className="flex flex-col items-center text-center p-6 rounded-xl bg-white/60 backdrop-blur-sm shadow-lg hover:shadow-xl transition-all duration-300 group hover:translate-y-1">
@@ -365,18 +365,18 @@ const Index = () => {
             {[
               {
                 quote: "LearnSphere has completely transformed how I organize my coursework. The deadline tracking alone saved me from missing several important assignments.",
-                name: "Alex Johnson",
-                role: "Computer Science Major"
+                name: "Atul Sharma",
+                role: "Cloud Computing"
               },
               {
                 quote: "As a teaching assistant, I've seen a significant improvement in submission quality since my students started using LearnSphere. The platform is intuitive and powerful.",
-                name: "Dr. Sarah Chen",
-                role: "Assistant Professor"
+                name: "Jhil Jain",
+                role: "CA Article"
               },
               {
                 quote: "The progress tracking features help me identify which subjects need more attention. My GPA has improved by 0.5 points since I started using LearnSphere!",
-                name: "Michael Rodriguez",
-                role: "Business Administration Student"
+                name: "Arpit Sharma",
+                role: "Engineering Student"
               }
             ].map((testimonial, index) => (
               <AnimatedTransition key={index} delay={index * 100}>
@@ -416,7 +416,6 @@ const Index = () => {
                   Start Your Journey Today <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <p className="mt-6 text-sm text-slate-500">No credit card required. Free for students.</p>
             </div>
           </AnimatedTransition>
         </div>
